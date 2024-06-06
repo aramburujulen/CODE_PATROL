@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Current Students</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form (submit) = "onSubmit()" [formGroup] = "formStudent">
+                <label for="id">Student ID</label>
+                <input type="text" id="id" required maxlength="9" minlength="9"  formControlName="id">
+                <label for="name">Name</label>
+                <input type="text" id="name" required maxlength="20"  formControlName="name">
+                <label for="name">Last Name</label>
+                <input type="text" id="surname" required maxlength="20" formControlName="surname">
+                <button class="btn btn-danger" type="submit">Insert Student</button>
+            </form>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Last Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    @for(student of students; track student ){
+                        <tr>
+                            <th scope="row">{{$index}}</th>
+                            <td>{{student.student_id}}</td>
+                            <td>{{student.name}}</td>
+                            <td>{{student.surname}}</td>
+                            <button class="btn btn-danger" (click)="deleteStudent(student.student_id)">REMOVE</button>
+                        </tr>
+
+                    }
+                  
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>

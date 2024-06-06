@@ -1,0 +1,27 @@
+<div class="container border border-2 border-black">
+    <div class="row" style="background-color: #32486d;" >
+        <div class="col-3" >
+          <img src="../../assets/logo.png" alt="">
+        </div>
+        <div class="col-9 align-items-center">
+          <h1 class="text-center fw-bold fx-5" style="color: lightyellow;">
+            CODE PATROL
+          </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+          <div>
+            <h2>Upload ZIP File</h2>
+            <form (ngSubmit)="onSubmit()" [formGroup]="form">
+              <div>
+                <label for="file">Select ZIP file:</label>
+                <input type="file" id="file" (change)="onFileChange($event)" required>
+              </div>
+              <button class="btn btn-danger" type="submit" [disabled]="!file">Check Plagiarism</button>
+            </form>
+          </div>
+        </div>
+    </div>
+    
+</div>

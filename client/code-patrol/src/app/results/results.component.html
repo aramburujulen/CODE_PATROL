@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center">Comparison Results</h2>
+        </div>
+    </div>
+    @for(result of results; track result){
+        <div class="row">
+            <div class="col">
+                <h3>
+                    Detection {{$index + 1}}
+                </h3>
+            </div>
+        </div>
+        <div class="row border border-3 border-black text-center">
+            <div class="col">
+                Percentage of {{result.file_1}} in {{result.file_2}}: {{result.sim1}} %
+            </div>
+            <div class="col">
+                Percentage of {{result.file_2}} in {{result.file_1}}: {{result.sim2}} %
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-success text-center" (click)="expandResult(result)">
+                    {{!result.isExpanded ? "Show Code" : "Hide Code"}}
+                </button>
+            </div>
+        </div>
+        @if(result.isExpanded){
+            <div class="row border border-3">
+                <div class="col-6 border border-2 " style="max-height: 500px; overflow-y: auto">
+                    <pre [innerHTML] = "result.processed_code1"></pre>
+                </div>
+                <div class="col-6 border border-2" style="max-height: 500px; overflow-y: auto">
+                    <pre [innerHTML] = "result.processed_code2"></pre>
+                </div>
+            </div>
+        }
+        
+    }
+</div>

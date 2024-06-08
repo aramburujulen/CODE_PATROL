@@ -10,11 +10,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col" style="background-color: #32486d;">
           <div>
             <h2>Upload ZIP File</h2>
-            <form (ngSubmit)="onSubmit()" [formGroup]="form">
-              <div>
+            <form  (ngSubmit)="onSubmit()" [formGroup]="form">
+              <div class="bg-white">
                 <label for="file">Select ZIP file:</label>
                 <input type="file" id="file" (change)="onFileChange($event)" required>
               </div>

@@ -5,10 +5,12 @@ from models.file import File
 from datetime import datetime
 from flask import Response, current_app
 from io import BytesIO
+from utils.name_checker import check_file_name
 import os
 
 def compare_submissions_from_folder(zip_file):
     submissions = []
+    results = []
     with ZipFile(zip_file, "r") as zip_pointer:
         first_level_folders = set()
 
@@ -21,28 +23,41 @@ def compare_submissions_from_folder(zip_file):
         
         for folder_name in first_level_folders:
             if folder_name.endswith("/"):
-                new_submission = Submission(
-                    submission_id = 99,
-                    name = folder_name,
-                    date = datetime.now(),
-                    subject = "default",
-                    student_id = "default"
-                )
-                new_submission.files.extend(obtain_files(zip_pointer, folder_name, ""))
-                submissions.append(new_submission)
+                if check_file_name(folder_name):
+
+                    new_submission = Submission(
+                        submission_id = 99,
+                        name = folder_name,
+                        date = datetime.now(),
+                        subject = "default",
+                        student_id = "default"
+                    )
+                    new_submission.files.extend(obtain_files(zip_pointer, folder_name, ""))
+                    submissions.append(new_submission)
+                else:
+                    results.append({
+                        "error": "INVALID SUBMISSION NAME",
+                        "name": folder_name
+                    })
             elif folder_name.endswith(".zip"):
                 print("ZIP DETECTED")
-                with zip_pointer.open(folder_name) as file:
-                    with ZipFile(BytesIO(file.read())) as zip_sub_pointer:
-                        new_submission = Submission(
-                            submission_id = 99,
-                            name = folder_name,
-                            date = datetime.now(),
-                            subject = "default",
-                            student_id = "default"
-                        )
-                        new_submission.files.extend(obtain_files(zip_sub_pointer, "", folder_name.split(".")[0] + "/"))
-                        submissions.append(new_submission)
+                if check_file_name(folder_name):
+                    with zip_pointer.open(folder_name) as file:
+                        with ZipFile(BytesIO(file.read())) as zip_sub_pointer:
+                            new_submission = Submission(
+                                submission_id = 99,
+                                name = folder_name,
+                                date = datetime.now(),
+                                subject = "default",
+                                student_id = "default"
+                            )
+                            new_submission.files.extend(obtain_files(zip_sub_pointer, "", folder_name.split(".")[0] + "/"))
+                            submissions.append(new_submission)
+                else:
+                    results.append({
+                        "error": "INVALID SUBMISSION NAME",
+                        "name": folder_name
+                    })
     print(f"LENGHT {len(submissions)}")
     threads = []
     for i in range(len(submissions)):
@@ -55,7 +70,7 @@ def compare_submissions_from_folder(zip_file):
     for thread in threads:
         thread.join()
 
-    results = []
+    
 
     for thread in threads:
         results.extend(thread.results)

@@ -55,7 +55,11 @@ def delete_submission(sub_id):
 def filter_submissions():
     return sc.get_filtered_submissions(request.json)
 
+@app.route("/editStudent", methods=["PUT"])
+def edit_student():
+    data = request.json
 
+    return stc.edit_student(data)
 
 
 

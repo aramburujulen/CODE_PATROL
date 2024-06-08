@@ -46,4 +46,8 @@ export class ApiService {
   getFilteredSubmissions(filters: any): Observable<any>{
     return this.http.post("http://localhost:5000/filterSubmissions", filters)
   }
+
+  editStudent(data: any): Observable<any>{
+    return this.http.put("http://localhost:5000/editStudent", data)
+  }
 }

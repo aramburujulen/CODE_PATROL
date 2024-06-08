@@ -35,11 +35,25 @@
                 <tbody>
                     @for(student of students; track student ){
                         <tr>
-                            <th scope="row">{{$index}}</th>
-                            <td>{{student.student_id}}</td>
-                            <td>{{student.name}}</td>
-                            <td>{{student.surname}}</td>
-                            <button class="btn btn-danger" (click)="deleteStudent(student.student_id)">REMOVE</button>
+                            @if(!student.editing){
+                                <th scope="row">{{$index}}</th>
+                                <td>{{student.student_id}}</td>
+                                <td>{{student.name}}</td>
+                                <td>{{student.surname}}</td>
+                                <button class="btn btn-warning" (click)="editStudent($index)">EDIT</button>
+                                <button class="btn btn-danger" (click)="deleteStudent(student.student_id)">REMOVE</button>
+                            }
+                            @else{
+                                <th scope="row">{{$index}}</th>
+                                <td>{{student.student_id}}</td>
+                                <input type="text" formControlName="new_name" [formControl]="$any(getFormGroup($index)).get('new_name')">
+                                <input type="text" formControlName="new_surname" [formControl]="$any(getFormGroup($index)).get('new_surname')">
+                                <button class="btn btn-warning" (click)="saveStudent($index)">SAVE</button>
+                                <button class="btn btn-warning" (click)="cancelEdit($index)">CANCEL</button>
+                                <button class="btn btn-danger" (click)="deleteStudent(student.student_id)">REMOVE</button>
+                            }
+                            
+                            
                         </tr>
 
                     }

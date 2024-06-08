@@ -39,3 +39,24 @@ def delete_student(std_id):
     except:
         return Response(status=404)
     
+
+def edit_student(new_data):
+    try:
+        print(new_data)
+        std_id = new_data["std_id"]
+        student = Student.query.get(std_id)
+
+        if "new_name" in new_data and new_data["new_name"]:
+            student.name = new_data["new_name"]
+        
+        if "new_surname" in new_data and new_data["new_surname"]:
+            student.surname = new_data["new_surname"]
+        
+        db.session.commit()
+    
+        return Response(status=200)
+    except Exception as e:
+        print("Error editing", e)
+        return Response(status=404)
+
+

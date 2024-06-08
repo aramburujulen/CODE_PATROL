@@ -42,7 +42,7 @@ def compare_files(f1: File, f2: File, k = 25):
         pos2 += positions2[indices2, 1]
 
     processed_code1 = prepare_code(code1, pos1).replace("\t", "&nbsp;&nbsp;&nbsp;")
-    processed_code2 = prepare_code(code2, pos2).replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+    processed_code2 = prepare_code(code2, pos2).replace("\t", "&nbsp;&nbsp;&nbsp;")
 
     return {"file_1": f1.name, "file_2": f2.name, "sim1": sim1, "sim2": sim2, "processed_code1": processed_code1, "processed_code2": processed_code2}
     

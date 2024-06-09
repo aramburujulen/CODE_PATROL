@@ -1,10 +1,10 @@
 from flask import jsonify, Response
-from models.submission import Submission
-from models.student import Student
-from models.file import File
+from src.models.submission import Submission
+from src.models.student import Student
+from src.models.file import File
 from sqlalchemy import Insert
-from utils.normalize_data import normalize_data
-from models import db
+from src.utils.normalize_data import normalize_data
+from src.models import db
 from zipfile import ZipFile
 from json import dumps
 
@@ -53,7 +53,7 @@ def insert_submission(sub_data, zip_file):
         db.session.commit()
         return Response(status=200)
     except Exception as e:
-        print(e)
+        print("Error inserting submissions", e)
         return Response(status=404)
 
 
@@ -77,10 +77,10 @@ def get_filtered_submissions(filters):
     try:
         base_query = db.session.query(Submission, Student)
         if "init_date" in filters and filters["init_date"]:
-            base_query.filter(Submission.date >= filters["init_date"])
+            base_query = base_query.filter(Submission.date >= filters["init_date"])
 
         if "end_date" in filters and filters["end_date"]:
-            base_query.filter(Submission.date <= filters["end_date"])
+            base_query = base_query.filter(Submission.date <= filters["end_date"])
 
         if "subject" in filters and filters["subject"]:
             base_query = base_query.filter(Submission.subject == filters["subject"])
@@ -91,9 +91,12 @@ def get_filtered_submissions(filters):
         if "student_id" in filters and filters["student_id"]:
             base_query = base_query.filter(Submission.student_id == filters["student_id"])
         
-        submissions_students = base_query.join(Student, Submission.student_id == Student.student_id).all()
-
+        
+        
+        base_query = base_query.join(Student, Submission.student_id == Student.student_id)
+        submissions_students = base_query.all()
         submission_data = []
+
         for submission, student in submissions_students:
             new_data = {
                 'submission_id': submission.submission_id,
@@ -104,12 +107,14 @@ def get_filtered_submissions(filters):
                 'student_name': student.name,
                 'student_surname': student.surname
             }
+            print(new_data)
+            submission_data.append(new_data)
 
-        submission_data.append(new_data)
-    
+       
 
         return jsonify(submission_data)
     except Exception as e:
+        print("Error filtering subs", e)
         return Response(status=500)
 
 

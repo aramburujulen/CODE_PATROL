@@ -6,6 +6,7 @@ import { NewSubmissionComponent } from './new-submission/new-submission.componen
 import { SubmissionsComponent } from './submissions/submissions.component';
 
 export const routes: Routes = [
+    {path:"", component:HomeComponent},
     {path:"home", component:HomeComponent},
     {path:"results", component:ResultsComponent},
     {path:"students", component:StudentsComponent},

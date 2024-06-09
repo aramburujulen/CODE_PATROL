@@ -1,12 +1,12 @@
 import threading
-from detection.algorithms.winnowing.process import compare_files
-from models.submission import Submission
+from src.detection.algorithms.winnowing.process import compare_files
 import time
 from flask import Flask
+from src.models import db
 
 class ComparisonThread(threading.Thread):
 
-    def __init__(self, app: Flask, submission_1: Submission, submission_2: Submission):
+    def __init__(self, app: Flask, submission_1, submission_2):
         super().__init__()
         self.submission_1 = submission_1
         self.submission_2 = submission_2
@@ -27,6 +27,8 @@ class ComparisonThread(threading.Thread):
 
             end_time = time.time()
             print(f"Processed in {(end_time - start_time) * 1000} ms")
+
+            db.session.remove()
         
     
         

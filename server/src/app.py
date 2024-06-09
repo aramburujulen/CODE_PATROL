@@ -1,23 +1,22 @@
 from pygments import lexer
-from config.config import Config
+from src.config.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request
 from flask_cors import CORS
-from models import db
+from src.models import db
 
 
-def start_app():
+def create_app(config=Config):
     app = Flask(__name__)
-    app.config.from_object(Config())
+    app.config.from_object(config) #changed this to take a parameter instead of Config
     CORS(app)
     
-    db.init_app(app)
-
     
+    db.init_app(app)
     with app.app_context():
-        from routes import routes
+        from src.routes import routes
         db.create_all()
-
+        
         return app
     
 
@@ -25,5 +24,5 @@ def start_app():
 
 
 if __name__ == "__main__":
-    app = start_app()
+    app = create_app()
     app.run(debug=True)

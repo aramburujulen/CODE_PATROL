@@ -1,7 +1,7 @@
 from flask import current_app as app
-import controllers.submission_controller as sc
-import controllers.student_controller as stc
-import controllers.main_controller as mc
+import src.controllers.submission_controller as sc
+import src.controllers.student_controller as stc
+import src.controllers.main_controller as mc
 from flask import request
 
 @app.route("/submissions", methods=["GET"])
@@ -37,8 +37,9 @@ def add_submission():
 
 @app.route("/processSubmissionFolder", methods=["POST"])
 def process_submission_folder():
+    compare_with_db = True if  request.form["compareWithDB"] == "true" else False
     zip_file = request.files["file"]
-    return mc.compare_submissions_from_folder(zip_file)
+    return mc.compare_submissions_from_folder(zip_file, compare_with_db)
 
 
 @app.route("/compareSubmissions", methods=["POST"])

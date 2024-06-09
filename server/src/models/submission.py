@@ -1,5 +1,5 @@
 from . import db
-from models.submission_comparison import submission_comparison
+from src.models.submission_comparison import submission_comparison
 
 
 

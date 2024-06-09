@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <form (submit) = "onSubmit()" [formGroup] = "formStudent">
+            <form (submit) = "onSubmit()" [formGroup] = "formStudent" ngNativeValidate>
                 <label for="id">Student ID</label>
                 <input type="text" id="id" required maxlength="9" minlength="9"  formControlName="id">
                 <label for="name">Name</label>
@@ -50,7 +50,6 @@
                                 <input type="text" formControlName="new_surname" [formControl]="$any(getFormGroup($index)).get('new_surname')">
                                 <button class="btn btn-warning" (click)="saveStudent($index)">SAVE</button>
                                 <button class="btn btn-warning" (click)="cancelEdit($index)">CANCEL</button>
-                                <button class="btn btn-danger" (click)="deleteStudent(student.student_id)">REMOVE</button>
                             }
                             
                             
@@ -63,3 +62,6 @@
         </div>
     </div>
 </div>
+<br>
+<br>
+<br>

@@ -1,4 +1,4 @@
-from app import db
+from .import db
 
 class Student(db.Model):
     student_id = db.Column(db.String(10), primary_key = True)

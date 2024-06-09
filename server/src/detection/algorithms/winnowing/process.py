@@ -1,12 +1,11 @@
 import numpy as np
-from models.file import File
 from .fingerprints import form_fingerprints, find_fingerprint_overlaps
 from .kgrams import form_hashed_kgrams
 from .tokenize import tokenize
 from .winnow import winnow
 import math
 
-def compare_files(f1: File, f2: File, k = 25):
+def compare_files(f1, f2, k = 25):
     code1 = f1.content
     code2 = f2.content
 

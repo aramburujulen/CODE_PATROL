@@ -2,20 +2,19 @@ from pygments import token
 from pygments import lexers
 import pygments
 import pygments.lexer
-from models.submission import Submission
+from src.models.submission import Submission
 import numpy as np
-from models.file import File
+from src.models.file import File
 
 
-def tokenize(doc: File):
+def tokenize(doc):
 
     try:
         lexer = lexers.get_lexer_by_name(doc.language)
     except:
         lexer = lexers.get_lexer_for_filename(doc.name)
 
-    
-    #print(lexer)
+    print(lexer)
     tokens = lexer.get_tokens(text=doc.content)
     
     result = ""

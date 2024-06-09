@@ -29,13 +29,14 @@ def check_file_name(file_name: str):
 def check_id(dni):
 
     if dni[0] == "X" or dni[0] == "Y" or dni[0] == "Z":
-        print("hi")
+        initial_conversion = {'X': '0', 'Y': '1', 'Z': '2'}
+        numeric_value = int(initial_conversion[dni[0]] + dni[1:8])
     else:
         numeric_value = int(dni[:8])
         print(str(numeric_value % 23))
 
 
-        return dni[8] == DNI_REFS[numeric_value % 23]
+    return dni[8] == DNI_REFS[numeric_value % 23]
 
     
 

@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class HomeComponent {
 
   file: any
+  compareWithDB: boolean = false;
 
   form = new FormGroup({
     "file": new FormControl(null)
@@ -31,6 +32,7 @@ export class HomeComponent {
     if(this.file){
       const formData = new FormData();
       formData.append('file', this.file);
+      formData.append("compareWithDB", this.compareWithDB.toString())
 
       this.api.processSubmissionFolder(formData).subscribe((response) => {
         console.log('Upload success:', response);
@@ -42,5 +44,7 @@ export class HomeComponent {
     }
   }
 
-
+  onCheckboxChange(event: any){
+    this.compareWithDB = event.target.checked
+  }
 }

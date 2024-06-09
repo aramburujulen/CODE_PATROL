@@ -1,8 +1,8 @@
-from models.student import Student
+from src.models.student import Student
 from sqlalchemy import Insert, Delete
-from models import db
+from src.models import db
 from flask import jsonify, Response
-from utils.normalize_data import normalize_data
+from src.utils.normalize_data import normalize_data
 
 
 def add_student(data):

@@ -1,14 +1,18 @@
-from detection.comparison_thread import ComparisonThread
+from src.detection.comparison_thread import ComparisonThread
 from zipfile import ZipFile
-from models.submission import Submission
-from models.file import File
+from src.models.submission import Submission
+from src.models.student import Student
+from src.models.file import File
 from datetime import datetime
 from flask import Response, current_app
+from sqlalchemy import Insert
 from io import BytesIO
-from utils.name_checker import check_file_name
+from src.utils.name_checker import check_file_name
+from src.models import db
+from sqlalchemy.orm import joinedload
 import os
 
-def compare_submissions_from_folder(zip_file):
+def compare_submissions_from_folder(zip_file, compare_with_db):
     submissions = []
     results = []
     with ZipFile(zip_file, "r") as zip_pointer:
@@ -23,58 +27,70 @@ def compare_submissions_from_folder(zip_file):
         
         for folder_name in first_level_folders:
             if folder_name.endswith("/"):
-                if check_file_name(folder_name):
-
-                    new_submission = Submission(
-                        submission_id = 99,
-                        name = folder_name,
-                        date = datetime.now(),
-                        subject = "default",
-                        student_id = "default"
-                    )
-                    new_submission.files.extend(obtain_files(zip_pointer, folder_name, ""))
-                    submissions.append(new_submission)
-                else:
+                is_valid = check_file_name(folder_name)
+                new_submission = Submission(
+                    name = folder_name if is_valid else "INVALID",
+                    date = datetime.now(),
+                    subject = "default",
+                    student_id = folder_name.split("_")[0] if is_valid else 999
+                )
+                new_submission.files.extend(obtain_files(zip_pointer, folder_name, ""))
+                submissions.append(new_submission)
+                if not is_valid:
                     results.append({
                         "error": "INVALID SUBMISSION NAME",
                         "name": folder_name
                     })
             elif folder_name.endswith(".zip"):
                 print("ZIP DETECTED")
-                if check_file_name(folder_name):
-                    with zip_pointer.open(folder_name) as file:
-                        with ZipFile(BytesIO(file.read())) as zip_sub_pointer:
-                            new_submission = Submission(
-                                submission_id = 99,
-                                name = folder_name,
-                                date = datetime.now(),
-                                subject = "default",
-                                student_id = "default"
-                            )
-                            new_submission.files.extend(obtain_files(zip_sub_pointer, "", folder_name.split(".")[0] + "/"))
-                            submissions.append(new_submission)
-                else:
+                is_valid = check_file_name(folder_name)
+                with zip_pointer.open(folder_name) as file:
+                    with ZipFile(BytesIO(file.read())) as zip_sub_pointer:
+                        new_submission = Submission(
+                            name = folder_name if is_valid else "INVALID",
+                            date = datetime.now(),
+                            subject = "default",
+                            student_id = folder_name.split("_")[0] if is_valid else 999
+                        )
+                        new_submission.files.extend(obtain_files(zip_sub_pointer, "", folder_name.split(".")[0] + "/"))
+                        submissions.append(new_submission)
+                if not is_valid:
                     results.append({
                         "error": "INVALID SUBMISSION NAME",
                         "name": folder_name
                     })
     print(f"LENGHT {len(submissions)}")
-    threads = []
-    for i in range(len(submissions)):
-        for j in range(i, len(submissions)):
-            if(i != j):
-                new_thread = ComparisonThread(current_app._get_current_object(), submissions[i], submissions[j])
-                new_thread.start()
-                threads.append(new_thread)
-                
+    if compare_with_db:
+        all_submissions = submissions
+        all_submissions.extend(get_submissions_from_subject(zip_file.filename))
+        threads = []
+        for i in range(len(all_submissions)):
+            for j in range(i, len(all_submissions)):
+                if(i != j):
+                    new_thread = ComparisonThread(current_app._get_current_object(), all_submissions[i], all_submissions[j])
+                    new_thread.start()
+                    threads.append(new_thread)
+    else:
+        threads = []
+        for i in range(len(submissions)):
+            for j in range(i, len(submissions)):
+                if(i != j):
+                    new_thread = ComparisonThread(current_app._get_current_object(), submissions[i], submissions[j])
+                    new_thread.start()
+                    threads.append(new_thread)
+
+    
+    
     for thread in threads:
         thread.join()
 
-    
+    valid_submissions = list(filter(lambda sub: sub.name != "INVALID", submissions))
+    insert_submissions(valid_submissions)
 
     for thread in threads:
         results.extend(thread.results)
 
+    print(str(results) + "I AM HERE I AM HERE I AM HERE")
     return results
 
 
@@ -86,7 +102,7 @@ def obtain_files(zip_pointer, parent, saved_path):
             with zip_pointer.open(file_name) as f:
                 try:
                     content = f.read().decode("utf-8")
-                    files.append(File(file_id=99, name=os.path.join(saved_path, parent, file_name), content=content))
+                    files.append(File(name=os.path.join(saved_path, parent, file_name), content=content))
                 except Exception as e:
                     print(f"Skipping file with weird decoding: {file_name}", e)
                     continue
@@ -97,28 +113,36 @@ def obtain_files(zip_pointer, parent, saved_path):
 def compare_submissions(ids_a, ids_b):
 
     try:
-        print(ids_a)
-        print(ids_b)
-        submissions_a = Submission.query.filter(Submission.submission_id.in_(ids_a)).all()
 
-        submissions_b = Submission.query.filter(Submission.submission_id.in_(ids_b)).all()
+        submissions_a = Submission.query \
+            .filter(Submission.submission_id.in_(ids_a)) \
+            .options(joinedload(Submission.files)) \
+            .all()
+
+        submissions_b = Submission.query \
+            .filter(Submission.submission_id.in_(ids_b)) \
+            .options(joinedload(Submission.files)) \
+            .all()
         
+        print(str(len(submissions_a)))
+        print(str(len(submissions_b)))
         threads = []
         for submission_a in submissions_a:
             for submission_b in submissions_b:
                 new_thread = ComparisonThread(current_app._get_current_object(), submission_a, submission_b)
-                new_thread.start()
                 threads.append(new_thread)
+                new_thread.start()
         
         for thread in threads:
             thread.join()
         
+        print(len(threads))
         results = []
 
-
+        
         for thread in threads:
             results.extend(thread.results)
-        
+        print(str(results) + "I AM HERE I AM HERE I AM HERE")
         return results
     
     except Exception as e:
@@ -126,9 +150,31 @@ def compare_submissions(ids_a, ids_b):
         return Response(status=404)
 
     
+def insert_submissions(submissions):
+    try:
+        for submission in submissions:
+            student = Student.query.get(submission.student_id)
 
-    
+            if not student:
+                student = Student(
+                    student_id=submission.student_id,
+                    name=submission.name.split("_")[1],
+                    surname=submission.name.split("_")[2]
+                )
+                db.session.add(student)
 
-    
+        db.session.add_all(submissions)
+        db.session.commit()
+    finally:
+        db.session.close()
+
+def get_submissions_from_subject(subject):
+    try:
+        submissions = Submission.query.filter_by(subject=subject).all()
+
+        return submissions
+    except Exception as e:
+        print("Error getting submissions")
+        return []
 
 

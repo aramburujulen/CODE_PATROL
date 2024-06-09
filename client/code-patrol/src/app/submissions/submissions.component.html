@@ -1,7 +1,7 @@
-<div class="container" cdkDropListGroup>
+<div class="container p-5" cdkDropListGroup style="background-color: #32486d;">
     <div class="row">
         <div class="col">
-            <h2 class="text-center">Submission Manager</h2>
+            <h2 class="text-center text-white">Submission Manager</h2>
         </div>
     </div>
     <div class="row">
@@ -12,10 +12,10 @@
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col"  cdkDropList [cdkDropListData]="leftSubmissions" (cdkDropListDropped)="onDrop($event)">
-            <h3>Left Submissions</h3>
-            <div class="row border border-5 submission-box " style="max-height: 400px; overflow-y: auto;">
-                <div class="col">
+        <div class="col-5"  cdkDropList [cdkDropListData]="leftSubmissions" (cdkDropListDropped)="onDrop($event)">
+            <h3 class="text-white">Left Submissions</h3>
+            <div class="row border border-5 border-black submission-box " style="max-height: 400px; overflow-y: auto; max-width: 500px; overflow-x: auto;">
+                <div class="col bg-white">
                     <table class="table">
                         <tbody>
                             @for(submission of leftSubmissions; track submission){
@@ -36,10 +36,10 @@
         <div class="col-2">
             
         </div>
-        <div class="col" cdkDropList [cdkDropListData]="rightSubmissions" (cdkDropListDropped)="onDrop($event)">
-            <h3>Right Submissions</h3>
-            <div class="row border border-5 submission-box " style="max-height: 400px; overflow-y: auto;">
-                <div class="col">
+        <div class="col-5" cdkDropList [cdkDropListData]="rightSubmissions" (cdkDropListDropped)="onDrop($event)">
+            <h3 class="text-white">Right Submissions</h3>
+            <div class="row border border-5 border-black submission-box " style="max-height: 400px; overflow-y: auto;  max-width: 500px; overflow-x: auto;">
+                <div class="col bg-white">
                     <table class="table">
                         <tbody>
                             @for(submission of rightSubmissions; track submission){
@@ -64,27 +64,27 @@
 <br>
     <div class="row all-submissions" cdkDropList [cdkDropListData]="submissions" (cdkDropListDropped)="onDrop($event)" >
         <div class="col">
-            <h3>All Submissions</h3>
+            <h3 class="text-white">All Submissions</h3>
             <form (submit)="onSubmitFilters()" [formGroup]="formFilters">
                 <div class="row">
                     <div class="col-2">
-                        <label for="init_date">From: </label>
+                        <label class="text-white" for="init_date">From: </label>
                         <input type="date" class="form-control" formControlName="init_date">
                     </div>
                     <div class="col-2">
-                        <label for="end_date">To: </label>
+                        <label class="text-white" for="end_date">To: </label>
                         <input type="date" class="form-control" formControlName="end_date">
                     </div>
                     <div class="col-2">
-                        <label for="student_id">Student ID: </label>
+                        <label class="text-white" for="student_id">Student ID: </label>
                         <input type="string" maxlength="9" minlength="9" class="form-control" formControlName="student_id">
                     </div>
                     <div class="col-2">
-                        <label for="student_id">Subject: </label>
+                        <label class="text-white" for="student_id">Subject: </label>
                         <input type="string" maxlength="20" class="form-control" formControlName="subject">
                     </div>
                     <div class="col-2">
-                        <label for="student_id">Submission Name: </label>
+                        <label class="text-white" for="student_id">Submission Name: </label>
                         <input type="string" maxlength="20" class="form-control" formControlName="name">
                     </div>
                     <div class="col-2">
@@ -94,7 +94,7 @@
                     </div>
                 </div>
             </form>
-            <button (click)="onClearFilters()" class="btn btn-warning">Apply Filters</button>
+            <button (click)="onClearFilters()" class="btn btn-warning">Clear Filters</button>
             <div class="row">
                 <div class="col d-flex">
                     <button class="btn btn-primary" (click)="addAll('left')"> ADD ALL TO THE LEFT</button>
@@ -109,6 +109,7 @@
                         <th>Student Name</th>
                         <th>Submission Name</th>
                         <th>Submission Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -27,7 +27,7 @@ def tokenize(doc):
             result += "V"
             pos_pairs.append([len(result) - 1, current_pos])
             current_pos += len(t[1]) - 1
-        elif t in token.Name.Function:
+        elif t[0] in token.Name.Function:
             result += "F"
             pos_pairs.append([len(result) - 1, current_pos])
             current_pos += len(t[1]) - 1
@@ -41,7 +41,7 @@ def tokenize(doc):
             current_pos += len(t[1]) - 1
         elif t[0] in token.Text or t[0] in token.Comment:
             pos_pairs.append([len(result) - 1, current_pos])
-            current_pos += len(t[1]) - 1
+            current_pos += len(t[1])
         elif t[0] in token.Literal.String:
             if t[1] == "'" or t[1] == '"':
                 result += '"'

@@ -29,20 +29,22 @@ def get_students():
 
 def delete_student(std_id):
     try:
-        stmt = Delete(Student).where(Student.student_id == std_id)
 
-        db.session.execute(stmt)
+        student_to_delete = Student.query.get(std_id)
 
+        for submission in student_to_delete.submissions:
+            db.session.delete(submission)
+        db.session.delete(student_to_delete)
         db.session.commit()
 
         return Response(status=204)
-    except:
+    except Exception as e:
+        print("Error deleting student", e)
         return Response(status=404)
     
 
 def edit_student(new_data):
     try:
-        print(new_data)
         std_id = new_data["std_id"]
         student = Student.query.get(std_id)
 

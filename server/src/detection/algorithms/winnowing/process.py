@@ -43,7 +43,8 @@ def compare_files(f1, f2, k = 25):
     processed_code1 = prepare_code(code1, pos1).replace("\t", "&nbsp;&nbsp;&nbsp;")
     processed_code2 = prepare_code(code2, pos2).replace("\t", "&nbsp;&nbsp;&nbsp;")
 
-    return {"file_1": f1.name, "file_2": f2.name, "sim1": sim1, "sim2": sim2, "processed_code1": processed_code1, "processed_code2": processed_code2}
+    return {"file_1_sub_id": f1.submission_id, "file_2_sub_id": f2.submission_id, "file_1": f1.name, 
+            "file_2": f2.name, "sim1": sim1, "sim2": sim2, "processed_code1": processed_code1, "processed_code2": processed_code2}
     
 
 

@@ -9,8 +9,12 @@
           </h1>
         </div>
     </div>
-    <hr>
-    <div class="row pt-5 justify-content-center" style="background-color: #32486d;">
+    <div class="row bg-dark">
+      <div class="col">
+        <hr>
+      </div>
+    </div>
+    <div class="row pt-5 pb-5 justify-content-center" style="background-color: #32486d;">
         <div class="col justify-content-center" >
           <div>
             <h2 class="text-white">Upload ZIP File</h2>
@@ -30,7 +34,7 @@
                   Compare with database
                 </label>
               </div>
-              <button class="btn btn-danger" type="submit" [disabled]="!file">Check Plagiarism</button>
+              <button class="btn btn-danger ms-4" type="submit" [disabled]="!file">Check Plagiarism</button>
             </form>
           </div>
         </div>

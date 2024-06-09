@@ -4,6 +4,7 @@ import src.controllers.student_controller as stc
 import src.controllers.main_controller as mc
 from flask import request
 
+
 @app.route("/submissions", methods=["GET"])
 def get_submissions():
     return sc.get_submissions()
@@ -35,6 +36,7 @@ def add_submission():
 
     return sc.insert_submission(data, zip_file)
 
+
 @app.route("/processSubmissionFolder", methods=["POST"])
 def process_submission_folder():
     compare_with_db = True if  request.form["compareWithDB"] == "true" else False
@@ -48,13 +50,16 @@ def compare_submissions():
 
     return mc.compare_submissions(data["ids_a"], data["ids_b"])
 
+
 @app.route("/deleteSubmission/<sub_id>", methods=["DELETE"])
 def delete_submission(sub_id):
     return sc.delete_submission(sub_id)
 
+
 @app.route("/filterSubmissions", methods=["POST"])
 def filter_submissions():
     return sc.get_filtered_submissions(request.json)
+
 
 @app.route("/editStudent", methods=["PUT"])
 def edit_student():

@@ -3,6 +3,7 @@ from zipfile import ZipFile
 from src.models.submission import Submission
 from src.models.student import Student
 from src.models.file import File
+from src.models.submission_comparison import submission_comparison
 from datetime import datetime
 from flask import Response, current_app
 from sqlalchemy import Insert
@@ -15,6 +16,7 @@ import os
 def compare_submissions_from_folder(zip_file, compare_with_db):
     submissions = []
     results = []
+    
     with ZipFile(zip_file, "r") as zip_pointer:
         first_level_folders = set()
 
@@ -31,7 +33,7 @@ def compare_submissions_from_folder(zip_file, compare_with_db):
                 new_submission = Submission(
                     name = folder_name if is_valid else "INVALID",
                     date = datetime.now(),
-                    subject = "default",
+                    subject = zip_file.filename.split("_")[0],
                     student_id = folder_name.split("_")[0] if is_valid else 999
                 )
                 new_submission.files.extend(obtain_files(zip_pointer, folder_name, ""))
@@ -49,7 +51,7 @@ def compare_submissions_from_folder(zip_file, compare_with_db):
                         new_submission = Submission(
                             name = folder_name if is_valid else "INVALID",
                             date = datetime.now(),
-                            subject = "default",
+                            subject = zip_file.filename.split("_")[0],
                             student_id = folder_name.split("_")[0] if is_valid else 999
                         )
                         new_submission.files.extend(obtain_files(zip_sub_pointer, "", folder_name.split(".")[0] + "/"))
@@ -142,7 +144,8 @@ def compare_submissions(ids_a, ids_b):
         
         for thread in threads:
             results.extend(thread.results)
-        print(str(results) + "I AM HERE I AM HERE I AM HERE")
+
+        insert_comparisons(results)
         return results
     
     except Exception as e:
@@ -150,6 +153,27 @@ def compare_submissions(ids_a, ids_b):
         return Response(status=404)
 
     
+def insert_comparisons(results):
+    try:
+        print(results)
+        comparison_values = []
+        for result in results:
+            if result["file_1_sub_id"] and result["file_2_sub_id"]:
+                comparison_values.append({
+                    "submission_1_id": result["file_1_sub_id"],
+                    "submission_2_id": result["file_2_sub_id"],
+                    "overlap_in_s1": result["sim1"],
+                    "overlap_in_s2": result["sim2"]
+                })
+        if comparison_values:
+            insert_stmt = submission_comparison.insert().values(comparison_values)
+            db.session.execute(insert_stmt)
+            db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print("Error attempting to store comparison ", e)
+
+
 def insert_submissions(submissions):
     try:
         for submission in submissions:
@@ -159,7 +183,7 @@ def insert_submissions(submissions):
                 student = Student(
                     student_id=submission.student_id,
                     name=submission.name.split("_")[1],
-                    surname=submission.name.split("_")[2]
+                    surname=submission.name.split("_")[2].replace(".zip", "")
                 )
                 db.session.add(student)
 
@@ -174,7 +198,7 @@ def get_submissions_from_subject(subject):
 
         return submissions
     except Exception as e:
-        print("Error getting submissions")
+        print("Error getting submissions", e)
         return []
 
 

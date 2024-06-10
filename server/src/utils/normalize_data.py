@@ -1,5 +1,9 @@
 
 
+#
+# Pre:---
+# Post:Función para normalizar datos y poder enviarlos como json
+#
 def normalize_data(data):
 
     if isinstance(data, list):

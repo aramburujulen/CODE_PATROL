@@ -39,22 +39,18 @@ export class SubmissionsComponent implements OnInit {
     })
   }
 
+  //Función encargada de habilitar el arrastre entre cajas de entregas
   onDrop(event: CdkDragDrop<any[]>) {
-    console.log('Event:', event);
-    console.log('Previous Container:', event.previousContainer);
-    console.log('Current Container:', event.container);
+
     if((event.previousContainer.id == "cdk-drop-list-0" || event.previousContainer.id == "cdk-drop-list-0") && event.container.id == "cdk-drop-list-2"){
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       return
     }
 
-    console.log(event.container + " " + event.previousContainer)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log("MOVING " + event.container.data)
     } else {
       copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      console.log("COPYING " + event.previousContainer.data)
     }
   }
 

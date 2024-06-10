@@ -44,14 +44,12 @@ def test_insert_submission(client):
 
 #TEST: Comprobar que la API deja borrar una entrega
 def test_delete_submission(client):
-    response = client.delete("/deleteSubmission/32")
+    response = client.delete("/deleteSubmission/33")
 
     assert response.status_code == 204
 
 #TEST: Comprobar que la API deja borrar un estudiante
 def test_delete_student(client):
-    
-    
 
     response = client.delete("/deleteStudent/123")
 

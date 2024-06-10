@@ -5,7 +5,11 @@ DNI_REFS = [
     "Q", "V", "H", "L", "C", "K", "E"
 ]
 
-
+#
+# Pre:---
+# Post: Función para validar el nombre de archivo del estudiante
+# params: file_name
+#
 def check_file_name(file_name: str):
 
     try:
@@ -27,6 +31,11 @@ def check_file_name(file_name: str):
     
 
 
+#
+# Pre:---
+# Post: Función para comprobar la validez de un DNi/NIE siguiendo la fórmula utilizada
+# params: dni
+#
 def check_id(dni):
     if dni[0] == "X" or dni[0] == "Y" or dni[0] == "Z":
         initial_conversion = {'X': '0', 'Y': '1', 'Z': '2'}

@@ -4,6 +4,7 @@ import time
 from flask import Flask
 from src.models import db
 
+#Hilo para comprobar dos entregas
 class ComparisonThread(threading.Thread):
 
     def __init__(self, app: Flask, submission_1, submission_2):
@@ -13,6 +14,11 @@ class ComparisonThread(threading.Thread):
         self.app = app
         self.results = []
 
+    #
+    # Pre:---
+    # Post: Función override de run encargada de comparar archivo por archivo y detectar plagios.
+    # Devuelve los resultados alarmantes
+    #
     def run(self):
         with self.app.app_context():
             start_time = time.time()

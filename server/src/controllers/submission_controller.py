@@ -9,7 +9,10 @@ from zipfile import ZipFile
 from json import dumps
 
 
-
+#
+# Pre:---
+# Post: Método encargado de obtener las entregas junto a datos de su estudiante
+# 
 def get_submissions():
 
     submissions_students = db.session.query(Submission, Student).join(Student, Submission.student_id == Student.student_id).all()
@@ -31,6 +34,11 @@ def get_submissions():
 
     return jsonify(submission_data)
 
+#
+# Pre:---
+# Post: Método para insertar una nueva entrega. Consigue los ficheros para la entrega del zip recibido. 
+# params: sub_data, zip_file
+# 
 def insert_submission(sub_data, zip_file):
     try:
         new_submission = Submission(student_id = sub_data["student_id"], name = sub_data["name"], date = sub_data["date"], subject = sub_data["subject"])
@@ -56,7 +64,11 @@ def insert_submission(sub_data, zip_file):
         print("Error inserting submissions", e)
         return Response(status=404)
 
-
+#
+# Pre:---
+# Post: Método encargado de borrar una entrega
+# params: sub_id
+# 
 def delete_submission(sub_id):
     try:
         submission_to_delete = Submission.query.get(sub_id)
@@ -69,10 +81,15 @@ def delete_submission(sub_id):
 
         return Response(dumps({"Success": "Submission was deleted"}), status=204)
     except Exception as e:
+        print("Error deleting submission", e)
         return Response(dumps({"error": "Error deleting submission"}), status=500)
     
 
-
+#
+# Pre:---
+# Post: Función de filtro de entregas, se puede filtrar por fecha, nombre, alumno (id) y asignatura
+# params: filters
+# 
 def get_filtered_submissions(filters):
     try:
         base_query = db.session.query(Submission, Student)
@@ -109,8 +126,6 @@ def get_filtered_submissions(filters):
             }
             print(new_data)
             submission_data.append(new_data)
-
-       
 
         return jsonify(submission_data)
     except Exception as e:

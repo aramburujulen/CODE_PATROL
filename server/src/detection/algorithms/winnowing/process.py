@@ -5,6 +5,18 @@ from .tokenize import tokenize
 from .winnow import winnow
 import math
 
+#
+# Pre:---
+# Post: Función principal para la comparación de código. Toma dos ficheros como parámetro y sigue los siguientes pasos:
+# 1. Transorma a tokens su contenido, recibiendo la lista de tokens y sus posiciones originales.
+# 2. Crea los kgrams (subsecuencias de longitud k) y calcula sus huellas 
+# 3. Busca cualquier intersección entre los valores de sus huellas, y si hay las devuelve con sus índices.
+# 4. Con esos índices, obtiene las poiciones respectivas en los códigos fuente.
+# 5. Calcula el porcentaje de tokens compartidos entre tokens totales para averiguar rango de tokens propios en el otro archivo
+# 6. Prepara el código a devolver, es decir, con los indices sabemos donde empieza y acaba la copia, así que hacemos highlight de esas partes
+# 7. Devuelve el resultado
+# params: f1, f2, k default 25
+#
 def compare_files(f1, f2, k = 25):
     code1 = f1.content
     code2 = f2.content
@@ -47,7 +59,12 @@ def compare_files(f1, f2, k = 25):
             "file_2": f2.name, "sim1": sim1, "sim2": sim2, "processed_code1": processed_code1, "processed_code2": processed_code2}
     
 
-
+#
+# Pre:---
+# Post: Función encargada para recolectar las posiciones del código original donde se intuye
+# que existe copia desde las ids de los kgrams
+# params: idx, k
+#
 def get_copied_code_pos(idx, k):
     if len(idx) == 0:
         return np.array([[],[]])
@@ -61,7 +78,12 @@ def get_copied_code_pos(idx, k):
 
     return np.array([slice_starts, slice_ends])
 
-
+#
+# Pre:---
+# Post: Función para obtener la cantidad total de tokens revelados tras el proceso de winnowing.
+# esto se usa para que sea dividido entre los tokens de intersección.
+# params: idx, k, token_len
+#
 def get_winnowed_tokens(idx, k, token_len):
     if len(idx) > 0:
         idx_arr = np.concatenate([np.array(i) for i in idx.values()])
@@ -72,7 +94,12 @@ def get_winnowed_tokens(idx, k, token_len):
         coverage[idx_arr + offset] = 1
     return np.sum(coverage)
 
-
+#
+# Pre:---
+# Post: Método para preparar el código, teniendo el código fuente y los índices de copia, se modifican 
+# los intervalos entre los índices para denotarlos como copiados.
+# params: content, positions
+#
 def prepare_code(content, positions):
     curr_pos = 0
     prepared_code = ""

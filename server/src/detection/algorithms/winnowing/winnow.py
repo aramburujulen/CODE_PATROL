@@ -1,5 +1,13 @@
 import numpy as np
 
+#
+# Pre:---
+# Post: Función para llamar al proceso de winnowing si es necesario.
+# Winnowing se define como dividir las huellas digitales (hasheos) y recoger
+# las más representativas para reducir la cantidad de datos a procesar,
+# lo que mejora la eficiencia. Si la window_size es 1, devuelve las huellas como están
+# params: hashes, window_size
+#
 def winnow(hashes, window_size):
 
     if window_size == 1:
@@ -11,7 +19,12 @@ def winnow(hashes, window_size):
 
     return selected_hashes, selected_idx
 
-
+#
+# Pre:---
+# Post: Función para realizar el proceso de winnowing, recorre los hasheos y busca el valor
+# más pequeño de hash que será el más representativo ya que representa un valor único.
+# params: hashes, window_size
+#
 def do_winnow(hashes, window_size):
     selected_idx = []
 

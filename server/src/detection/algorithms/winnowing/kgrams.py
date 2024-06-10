@@ -1,5 +1,10 @@
 import numpy as np
 
+#
+# Pre:---
+# Post: Función encargada de crear kgrams, es decir, subcadenas de longitud k hasheadas.
+# params: string, k
+#
 def form_hashed_kgrams(string, k):
     hashes = []
 

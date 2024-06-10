@@ -6,7 +6,15 @@ from src.models.submission import Submission
 import numpy as np
 from src.models.file import File
 
-
+#
+# Pre---
+# Post: Función encargada de transformar código en tokens. Recibe el documento y lo analiza con pygments
+# para averiguar que lenguaje de programación utiliza, así pygments lo transforma en tokens con el lexer
+# apropiado. Una vez tenemos los tokens, se normalizan para que todo tenga el mismo nombre, así evitamos
+# que los estudiantes puedan escapar la detección cambiando nombres de variables o funciones. También 
+# ignoramos aspectos irrelevantes.
+# Devuelve la lista de tokens y sus posiciones originales y las tokenizadas
+#
 def tokenize(doc):
 
     try:

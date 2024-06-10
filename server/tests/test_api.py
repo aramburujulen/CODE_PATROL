@@ -1,12 +1,16 @@
 import os
 import pytest
 from io import BytesIO
+from src.models.submission import Submission
 
+
+
+#TEST: Comprobar que la API devuelve estudiantes
 def test_students(client):
     response = client.get('/students')
     assert response.status_code == 200
 
-
+#TEST: Comprobar que la API deja insertar un estudiante nuevo
 def test_insert_student(client):
     student_data = {
         "id": "123",
@@ -17,7 +21,7 @@ def test_insert_student(client):
     response = client.post('/addStudent', json = student_data)
     assert response.status_code == 200
 
-
+#TEST: Comprobar que la API ddeja insertar una entrega
 def test_insert_submission(client):
     submission_data = {
         "student_id": "123",
@@ -38,17 +42,17 @@ def test_insert_submission(client):
     
     assert response.status_code == 200
 
-
+#TEST: Comprobar que la API deja borrar una entrega
 def test_delete_submission(client):
-
-    response = client.delete("/deleteSubmission/1")
+    response = client.delete("/deleteSubmission/32")
 
     assert response.status_code == 204
 
-
-
+#TEST: Comprobar que la API deja borrar un estudiante
 def test_delete_student(client):
     
+    
+
     response = client.delete("/deleteStudent/123")
 
     assert response.status_code == 204

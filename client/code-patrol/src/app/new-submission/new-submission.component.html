@@ -8,7 +8,7 @@
         <div class="col">
             <form (submit) = "onSubmit()" [formGroup] = "formNewSub" ngNativeValidate>
                 <div class="mb-3">
-                    <label for="student_id" class="form-label">Disabled select menu</label>
+                    <label for="student_id" class="form-label">Student</label>
                     <select id="student_id" class="form-select" formControlName="student_id" required>
                         @for(student of students; track student){
                             <option [value]="student.student_id">{{student.student_id}} : {{student.name}} {{student.surname}}</option>

@@ -1,4 +1,4 @@
-<div class="container p-5" cdkDropListGroup style="background-color: #32486d;">
+<div class="container" cdkDropListGroup style="background-color: #32486d;">
     <div class="row">
         <div class="col">
             <h2 class="text-center text-white">Submission Manager</h2>
@@ -14,7 +14,7 @@
     <div class="row mb-3">
         <div class="col-5"  cdkDropList [cdkDropListData]="leftSubmissions" (cdkDropListDropped)="onDrop($event)">
             <h3 class="text-white">Left Submissions</h3>
-            <div class="row border border-5 border-black submission-box " style="max-height: 400px; overflow-y: auto; max-width: 500px; overflow-x: auto;">
+            <div class="row border border-5 border-black submission-box " style="max-height: 200px; overflow-y: auto; max-width: 500px; overflow-x: auto;">
                 <div class="col bg-white">
                     <table class="table">
                         <tbody>
@@ -23,7 +23,7 @@
                                     <td>{{submission.student_id}}</td>
                                     <td>{{submission.student_name}}</td>
                                     <td>{{submission.submission_name}}</td>
-                                    <td>{{submission.submission_date}}</td>
+                                    <td>{{submission.submission_date | date:'dd MMMM yyyy, HH:mm'}}</td>
                                     <td><button (click)="onRemove('left', submission.submission_id)" class="btn btn-warning">REMOVE</button></td>
                                 </tr>
                             }
@@ -38,7 +38,7 @@
         </div>
         <div class="col-5" cdkDropList [cdkDropListData]="rightSubmissions" (cdkDropListDropped)="onDrop($event)">
             <h3 class="text-white">Right Submissions</h3>
-            <div class="row border border-5 border-black submission-box " style="max-height: 400px; overflow-y: auto;  max-width: 500px; overflow-x: auto;">
+            <div class="row border border-5 border-black submission-box " style="max-height: 200px; overflow-y: auto;  max-width: 500px; overflow-x: auto;">
                 <div class="col bg-white">
                     <table class="table">
                         <tbody>
@@ -47,7 +47,7 @@
                                     <td>{{submission.student_id}}</td>
                                     <td>{{submission.student_name}}</td>
                                     <td>{{submission.submission_name}}</td>
-                                    <td>{{submission.submission_date}}</td>
+                                    <td>{{submission.submission_date | date:'dd MMMM yyyy, HH:mm'}}</td>
                                     <td><button (click)="onRemove('right', submission.submission_id)" class="btn btn-warning">REMOVE</button></td>
                                 </tr>
                             }
@@ -87,43 +87,44 @@
                         <label class="text-white" for="student_id">Submission Name: </label>
                         <input type="string" maxlength="20" class="form-control" formControlName="name">
                     </div>
-                    <div class="col-2">
-                        <button type=submit class="btn btn-warning">Apply Filters</button>
-                        <br>
-                        
+                    <div class="col-2 align-items-center">
+                        <button type=submit class="btn mt-4 btn-success">Apply Filters</button>
                     </div>
                 </div>
             </form>
-            <button (click)="onClearFilters()" class="btn btn-warning">Clear Filters</button>
+            <button (click)="onClearFilters()" class="btn" style="background-color: orange;">Clear Filters</button>
+            <br>
+            <br>
             <div class="row">
                 <div class="col d-flex">
                     <button class="btn btn-primary" (click)="addAll('left')"> ADD ALL TO THE LEFT</button>
                     <button class="btn btn-success ms-auto" (click)="addAll('right')"> ADD ALL TO THE RIGHT</button>
                 </div>
             </div>
-            
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Student ID</th>
-                        <th>Student Name</th>
-                        <th>Submission Name</th>
-                        <th>Submission Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for(submission of submissions; track submission){
-                        <tr cdkDrag class="border border-2">
-                            <td>{{submission.student_id}}</td>
-                            <td>{{submission.student_name}}</td>
-                            <td>{{submission.submission_name}}</td>
-                            <td>{{submission.submission_date}}</td>
-                            <td><button (click)="onDelete(submission.submission_id)" class="btn btn-danger">DELETE</button></td>
+            <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Submission Name</th>
+                            <th>Submission Date</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @for(submission of submissions; track submission){
+                            <tr cdkDrag class="border border-2">
+                                <td>{{submission.student_id}}</td>
+                                <td>{{submission.student_name}}</td>
+                                <td>{{submission.submission_name}}</td>
+                                <td>{{submission.submission_date | date:'dd MMMM yyyy, HH:mm'}}</td>
+                                <td><button (click)="onDelete(submission.submission_id)" class="btn btn-danger">DELETE</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

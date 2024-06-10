@@ -13,6 +13,14 @@ from src.models import db
 from sqlalchemy.orm import joinedload
 import os
 
+#
+# Pre:---
+# Post: Función encargada de procesar un zip de exámenes o trabajos para la búsqueda de plagio en él. Extrae las entregas,
+# crea objetos con sus ficheros respectivos, valida sus nombres y realiza las comprobaciones de plagio entre 
+# pares de entregas y la base de datos si es necesario. Una vez realizadas las comprobaciones, guarda las
+# entregas válidas en la base de datos.
+# params: zip_file, compare_with_db
+#
 def compare_submissions_from_folder(zip_file, compare_with_db):
     submissions = []
     results = []
@@ -44,7 +52,6 @@ def compare_submissions_from_folder(zip_file, compare_with_db):
                         "name": folder_name
                     })
             elif folder_name.endswith(".zip"):
-                print("ZIP DETECTED")
                 is_valid = check_file_name(folder_name)
                 with zip_pointer.open(folder_name) as file:
                     with ZipFile(BytesIO(file.read())) as zip_sub_pointer:
@@ -61,7 +68,6 @@ def compare_submissions_from_folder(zip_file, compare_with_db):
                         "error": "INVALID SUBMISSION NAME",
                         "name": folder_name
                     })
-    print(f"LENGHT {len(submissions)}")
     if compare_with_db:
         all_submissions = submissions
         all_submissions.extend(get_submissions_from_subject(zip_file.filename))
@@ -92,10 +98,13 @@ def compare_submissions_from_folder(zip_file, compare_with_db):
     for thread in threads:
         results.extend(thread.results)
 
-    print(str(results) + "I AM HERE I AM HERE I AM HERE")
     return results
 
-
+#
+# Pre:---
+# Post: Método para la obtención de los ficheros de un zip, crea objetos de fichero por cada uno y devuelve una lista.
+# params: zip_pointer, parent, saved_path
+#
 def obtain_files(zip_pointer, parent, saved_path):
     files = []
 
@@ -111,7 +120,11 @@ def obtain_files(zip_pointer, parent, saved_path):
     print(files)
     return files
 
-
+#
+# Pre:---
+# Post: Método para la comparación de dos grupos de entregas, recibe dos vectores de ids, los mapea a objetos y los compara.
+# params: ids_a, ids_b
+#
 def compare_submissions(ids_a, ids_b):
 
     try:
@@ -152,7 +165,11 @@ def compare_submissions(ids_a, ids_b):
         print("Error comparing submissions", e)
         return Response(status=404)
 
-    
+#
+# Pre:---
+# Post: Método para la la inserción del historial de comparaciones tras procesar entregas.
+# params: results
+#   
 def insert_comparisons(results):
     try:
         print(results)
@@ -173,7 +190,11 @@ def insert_comparisons(results):
         db.session.rollback()
         print("Error attempting to store comparison ", e)
 
-
+#
+# Pre:---
+# Post: Método para la inserción de entregas válidas tras procesado de zip.
+# params: results
+#  
 def insert_submissions(submissions):
     try:
         for submission in submissions:

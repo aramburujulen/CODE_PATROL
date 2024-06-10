@@ -4,11 +4,12 @@ import { ApiService } from '../api.service';
 import { ResultsService } from '../results.service';
 import { Router } from '@angular/router';
 import {FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-submissions',
   standalone: true,
-  imports: [DragDropModule, ReactiveFormsModule],
+  imports: [DragDropModule, ReactiveFormsModule, DatePipe],
   templateUrl: './submissions.component.html',
   styleUrl: './submissions.component.css'
 })

@@ -5,10 +5,13 @@ from flask import Flask, request
 from flask_cors import CORS
 from src.models import db
 
-
+#
+# Pre:---
+# Post: Función para iniciar una aplicación Flask
+#
 def create_app(config=Config):
     app = Flask(__name__)
-    app.config.from_object(config) #changed this to take a parameter instead of Config
+    app.config.from_object(config)
     CORS(app)
     
     
